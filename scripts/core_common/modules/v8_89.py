@@ -68,9 +68,6 @@ def fix_ubuntu24():
   #if not is_ubuntu_24_or_higher():
   #  return
 
-  if "" == config.option("sysroot"):
-    return
-
   old_cur = os.getcwd()
   os.chdir("third_party/llvm-build/Release+Asserts/lib")
   base.cmd("mv", ["libstdc++.so.6", "libstdc++.so.6.old"])
