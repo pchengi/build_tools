@@ -162,7 +162,7 @@ def make():
   # build
   os.chdir("v8")
   #check and apply header fix
-  sc_dir = base.get_script_dir
+  sc_dir = base.get_script_dir()
   patchfile = sc_dir + '/../patches/v8headerfix'
   tgt = "src/base/logging.h"
   needpatch = False
