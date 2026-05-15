@@ -167,7 +167,7 @@ def make():
   tgt = "src/base/logging.h"
   needpatch = False
   try:
-      base.cmd("grep",["<cstdin>","%s"%tgt])
+      base.cmd("grep",["cstdin","%s"%tgt])
       print("cstdin header present. No need to patch")
   except:
       print("cstdin header missing. Will patch")
