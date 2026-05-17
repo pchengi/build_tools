@@ -11,6 +11,26 @@ def make():
 
   git_dir = base.get_script_dir() + "/../.."
   server_dir = base.get_script_dir() + "/../../server"
+  
+  patchfile = server_dir() + "/../build_tools/patches/climit.patch
+  tgt = server_dir + "Common/sources/constants.js"
+  needpatch = False
+  try:
+    base.cmd("grep",["exports.LICENSE_CONNECTIONS = 10000","%s"%tgt])
+    print("CUpgrade patch already in place.")
+  except:
+    print("CUpgrade patch will be applied.")
+    needpatch = True
+  if needpatch:
+    try:
+        oldcurd = os.getcwd()
+        os.chdir(server_dir)
+        base.cmd("git",["am","%s"%patchfile])
+        print("CUpgrade patch applied successfully.")
+    except:
+        print("CUpgrade patch failed to apply.")
+        raise
+    
   server_admin_panel_dir = base.get_script_dir() + "/../../server-admin-panel"
   branding_dir = server_dir + "/branding"
 
