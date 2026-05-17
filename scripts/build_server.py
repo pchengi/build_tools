@@ -12,7 +12,7 @@ def make():
   git_dir = base.get_script_dir() + "/../.."
   server_dir = base.get_script_dir() + "/../../server"
   
-  patchfile = server_dir() + "/../build_tools/patches/climit.patch
+  patchfile = server_dir() + "/../build_tools/patches/climit.patch"
   tgt = server_dir + "Common/sources/constants.js"
   needpatch = False
   try:
@@ -27,6 +27,7 @@ def make():
         os.chdir(server_dir)
         base.cmd("git",["am","%s"%patchfile])
         print("CUpgrade patch applied successfully.")
+        os.chdir(oldcurd)
     except:
         print("CUpgrade patch failed to apply.")
         raise
