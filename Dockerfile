@@ -15,7 +15,8 @@ RUN apt-get -y update && \
                        curl \
                        wget \
                        p7zip-full \
-                       python-is-python3
+                       python-is-python3 \
+                       debhelper
 
 WORKDIR /mnt
 ADD . build_tools
