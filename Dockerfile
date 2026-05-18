@@ -14,11 +14,12 @@ RUN apt-get -y update && \
                        git-lfs \
                        curl \
                        wget \
-                       p7zip-full
+                       p7zip-full \
+                       python-is-python3
 
-ADD . /build_tools
-WORKDIR /build_tools
-
+WORKDIR /mnt
+ADD . build_tools
+WORKDIR build_tools
 # Install local Python
 RUN cd tools/linux && \
     ./python.sh
@@ -36,10 +37,8 @@ RUN cd tools/linux && \
     ./cmake.sh
 
 # Fetch sysroot
-RUN cd tools/linux/sysroot && \
-    ../python3/bin/python3 ./fetch.py amd64
-
 ARG BRANCH=master
 ENV BRANCH=${BRANCH}
+WORKDIR /mnt/build_tools/tools/linux
 
-CMD ["sh", "-c", "./tools/linux/python3/bin/python3 ./configure.py --sysroot \"1\" --clean \"0\" --update-light \"1\" --branch \"${BRANCH}\" --update \"1\" --module \"desktop server builder\" --qt-dir \"$(pwd)/tools/linux/qt_build/Qt-5.9.9\" && ./tools/linux/python3/bin/python3 ./make.py"]
+CMD ["sh", "-c", "./python3/bin/python3 ./automate.py server --branch \"${BRANCH}\""]
