@@ -26,6 +26,7 @@ def make():
     try:
         oldcurd = os.getcwd()
         os.chdir(server_dir)
+        base.cmd("git",["checkout","-b", "CUpgrade"])
         base.cmd("git",["am","%s"%patchfile])
         print("CUpgrade patch applied successfully.")
         os.chdir(oldcurd)

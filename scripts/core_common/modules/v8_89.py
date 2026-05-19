@@ -284,6 +284,7 @@ def make():
       needpatch = True
   if needpatch:
       try:
+          base.cmd("git",["checkout","-b", "v8headerfix"])
           base.cmd("git",["am","%s"%patchfile])
           print("Patch applied successfully")
       except:
