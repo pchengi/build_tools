@@ -284,9 +284,10 @@ def make():
       needpatch = True
   if needpatch:
       try:
-          base.cmd("git",["checkout","-b", "v8headerfix"])
-          base.cmd("git",["am","%s"%patchfile])
+          subprocess.getoutput("git checkout -b headerfix")
+          subprocess.getoutput("git am %s"%patchfile)
           print("Patch applied successfully")
+          print("v8_89:Patch applied successfully")
       except:
           print("Patch application failed")
           raise

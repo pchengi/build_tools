@@ -16,7 +16,8 @@ RUN apt-get -y update && \
                        wget \
                        p7zip-full \
                        python-is-python3 \
-                       debhelper
+                       debhelper \
+                       pkg-config
 
 WORKDIR /mnt
 ADD . build_tools
@@ -42,4 +43,4 @@ ARG BRANCH=master
 ENV BRANCH=${BRANCH}
 WORKDIR /mnt/build_tools/tools/linux
 
-CMD ["sh", "-c", "./python3/bin/python3 ../../configure.py --clean \"0\" --update-light \"1\" --update \"1\" --branch \"${BRANCH}\" && ./automate.py server"]
+CMD ["sh", "-c", "./python3/bin/python3  ../../configure.py --clean \"0\" --update \"1\" --update-light \"1\" --module \"server\" --branch \"${BRANCH}\" && ./python3/bin/python3 ../../make.py"]
