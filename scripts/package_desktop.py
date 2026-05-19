@@ -35,16 +35,19 @@ def s3_upload(files, dst):
 #
 
 def make_windows():
-  global package_name, package_version, arch
+  global package_name, package_version, arch, xp
   utils.set_cwd("desktop-apps\\package")
 
   package_name = branding.desktop_package_name
   package_version = common.version + "." + common.build
   arch = {
     "windows_x64":    "x64",
+    "windows_x64_xp": "x64",
     "windows_x86":    "x86",
+    "windows_x86_xp": "x86",
     "windows_arm64":  "arm64"
   }[common.platform]
+  xp = common.platform.endswith("_xp")
 
   if common.clean:
     utils.log_h2("desktop clean")
@@ -57,26 +60,22 @@ def make_windows():
     utils.delete_files("advinst\\*.aic")
     utils.delete_dir("zip")
 
-  if make_prepare():
+  if not xp:
+    make_prepare()
     make_zip()
     if branding.onlyoffice:
       make_inno()
       make_inno("standalone")
       make_advinst()
-  else:
-    utils.set_summary("desktop zip opensource build", False)
-    utils.set_summary("desktop inno opensource build", False)
-    utils.set_summary("desktop inno standalone build", False)
-    utils.set_summary("desktop advinst opensource build", False)
 
-  if branding.onlyoffice and make_prepare("commercial"):
-    make_zip("commercial")
-    make_inno("commercial")
-    make_advinst("commercial")
+      make_prepare("commercial")
+      make_zip("commercial")
+      make_inno("commercial")
+      make_advinst("commercial")
   else:
-    utils.set_summary("desktop zip commercial build", False)
-    utils.set_summary("desktop inno commercial build", False)
-    utils.set_summary("desktop advinst commercial build", False)
+    make_prepare("xp")
+    make_zip("xp")
+    make_inno("xp")
 
   utils.set_cwd(common.workspace_dir)
   return
@@ -85,7 +84,8 @@ def make_prepare(edition = "opensource"):
   args = [
     "-Version", package_version,
     "-Arch", arch,
-    "-Target", edition
+    "-Target", edition,
+    "-CompanyName", branding.company_name
   ]
   if common.sign:
     args += ["-Sign"]
@@ -93,16 +93,18 @@ def make_prepare(edition = "opensource"):
   utils.log_h2("desktop prepare " + edition)
   ret = utils.ps1("make.ps1", args, verbose=True)
   utils.set_summary("desktop prepare " + edition, ret)
-  return ret
+  return
 
 def make_zip(edition = "opensource"):
-  if edition == "commercial": zip_file = "%s-Enterprise-%s-%s.zip"
-  else:                       zip_file = "%s-%s-%s.zip"
+  if   edition == "commercial": zip_file = "%s-Enterprise-%s-%s.zip"
+  elif edition == "xp":         zip_file = "%s-XP-%s-%s.zip"
+  else:                         zip_file = "%s-%s-%s.zip"
   zip_file = "zip\\" + zip_file % (package_name, package_version, arch)
   args = [
     "-Version", package_version,
     "-Arch", arch,
-    "-Target", edition
+    "-Target", edition,
+    "-CompanyName", branding.company_name
   ]
   # if common.sign:
   #   args += ["-Sign"]
@@ -120,6 +122,8 @@ def make_zip(edition = "opensource"):
 def make_inno(edition = "opensource"):
   if   edition == "commercial": inno_file = "%s-Enterprise-%s-%s.exe"
   elif edition == "standalone": inno_file = "%s-Standalone-%s-%s.exe"
+  elif edition == "update":     inno_file = "%s-Update-%s-%s.exe"
+  elif edition == "xp":         inno_file = "%s-XP-%s-%s.exe"
   else:                         inno_file = "%s-%s-%s.exe"
   inno_file = "inno\\" + inno_file % (package_name, package_version, arch)
   args = [
@@ -129,6 +133,9 @@ def make_inno(edition = "opensource"):
   ]
   if common.sign:
     args += ["-Sign"]
+
+  if xp:
+    args += ["-TimestampServer", "http://timestamp.comodoca.com/authenticode"]
 
   utils.log_h2("desktop inno " + edition + " build")
   ret = utils.ps1("make_inno.ps1", args, verbose=True)
@@ -314,11 +321,11 @@ def make_linux():
     utils.log_h2("desktop " + edition + " build")
     make_args = [t["make"] for t in branding.desktop_make_targets]
     if edition == "commercial":
-      make_args.append("PACKAGE_EDITION=commercial")
+      make_args += ["-e", "PACKAGE_EDITION=commercial"]
     if common.platform == "linux_aarch64":
-      make_args.append("UNAME_M=aarch64")
+      make_args += ["-e", "UNAME_M=aarch64"]
     if not branding.onlyoffice:
-      make_args.append("BRANDING_DIR=../../" + common.branding + "/desktop-apps/package")
+      make_args += ["-e", "BRANDING_DIR=../../" + common.branding + "/desktop-apps/package"]
     ret = utils.sh("make clean && make " + " ".join(make_args), verbose=True)
     utils.set_summary("desktop " + edition + " build", ret)
 

@@ -104,25 +104,23 @@ def check_dependencies():
     checksResult.append(check_7z())
 
   checksResult.append(check_java())
+  checksResult.append(check_erlang())
+  checksResult.append(check_rabbitmq())
   checksResult.append(check_gruntcli())
 
   if (host_platform == 'windows'):
     checksResult.append(check_nodejs())
 
+  sql_type = config.option("sql-type")
+  if (sql_type == 'mysql' and host_platform == 'windows'):
+    checksResult.append(check_mysqlServer())
+  else:
+    checksResult.append(check_postgreSQL())
+
   server_addons = []
   if (config.option("server-addons") != ""):
     server_addons = config.option("server-addons").rsplit(", ")
-  lockstorage_dir = base.get_script_dir() + "/../../server-lockstorage"
-  has_lockstorage = ("server-lockstorage" in server_addons and base.is_exist(lockstorage_dir + "/package.json"))
-
-  if (has_lockstorage):
-    checksResult.append(check_erlang())
-    checksResult.append(check_rabbitmq())
-    sql_type = config.option("sql-type")
-    if (sql_type == 'mysql' and host_platform == 'windows'):
-      checksResult.append(check_mysqlServer())
-    else:
-      checksResult.append(check_postgreSQL())
+  if ("server-lockstorage" in server_addons):
     checksResult.append(check_redis())
 
   if (len(checksResult.install) > 0):
@@ -138,9 +136,6 @@ def check_dependencies():
       base.cmd('python', install_args, False)
 
   check_npmPath()
-  if (not has_lockstorage):
-    return True
-
   if (config.option("sql-type") == 'mysql' and host_platform == 'windows'):
     return check_MySQLConfig(checksResult.sqlPath)
   return check_postgreConfig(checksResult.sqlPath)
