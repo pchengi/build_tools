@@ -42,4 +42,4 @@ ARG BRANCH=master
 ENV BRANCH=${BRANCH}
 WORKDIR /mnt/build_tools/tools/linux
 
-CMD ["sh", "-c", "./python3/bin/python3 ./automate.py server --branch \"${BRANCH}\""]
+CMD ["sh", "-c", "./python3/bin/python3 ./configure.py --clean \"0\" --update-light \"1\" --update \"1\" --branch \"${BRANCH}\" && ./automate.py server"]
