@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd out/linux_64/onlyoffice/documentserver/server/FileConverter
-LD_LIBRARY_PATH=$PWD/bin \
-NODE_ENV=development-linux \
-NODE_CONFIG_DIR=$PWD/../Common/config \
-./converter
+cd out/linux_64/onlyoffice/documentserver/
+LD_LIBRARY_PATH=${PWD}/server/FileConverter/bin server/tools/allthemesgen \
+  --converter-dir="${PWD}/server/FileConverter/bin"\
+  --src="${PWD}/sdkjs/slide/themes"\
+  --output="${PWD}/sdkjs/common/Images"
