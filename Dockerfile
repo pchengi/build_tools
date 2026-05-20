@@ -39,8 +39,13 @@ RUN cd tools/linux && \
     ./cmake.sh
 
 # Fetch sysroot
+RUN cd tools/linux/sysroot && \
+    ../python3/bin/python3 ./fetch.py amd64
+
+
+# Fetch sysroot
 ARG BRANCH=master
 ENV BRANCH=${BRANCH}
 WORKDIR /mnt/build_tools/tools/linux
 
-CMD ["sh", "-c", "./python3/bin/python3  ../../configure.py --clean \"0\" --update \"1\" --update-light \"1\" --module \"server\" --branch \"${BRANCH}\" && ./python3/bin/python3 ../../make.py"]
+CMD ["sh", "-c", "./python3/bin/python3  ../../configure.py --clean \"0\" --sysroot \"1\" --update \"1\" --update-light \"1\" --module \"server\" --branch \"${BRANCH}\" && ./python3/bin/python3 ../../make.py"]
