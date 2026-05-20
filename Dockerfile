@@ -45,7 +45,9 @@ RUN cd tools/linux/sysroot && \
 
 # Fetch sysroot
 ARG BRANCH=master
+ARG MODULE=server
+ENV MODULE={MODULE}
 ENV BRANCH=${BRANCH}
 WORKDIR /mnt/build_tools/tools/linux
 
-CMD ["sh", "-c", "./python3/bin/python3  ../../configure.py --clean \"0\" --sysroot \"1\" --update \"1\" --update-light \"1\" --module \"server\" --branch \"${BRANCH}\" && ./python3/bin/python3 ../../make.py"]
+CMD ["sh", "-c", "./python3/bin/python3 ./automate.py ${MODULE} --clean=\"0\" --sysroot=\"0\" --update=\"1\" --update-light=\"1\" --branch=\"${BRANCH}\""]
