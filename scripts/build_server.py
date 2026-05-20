@@ -15,7 +15,7 @@ def make():
   server_dir = base.get_script_dir() + "/../../server"
   
   patchfile = server_dir + "/../build_tools/patches/climit.patch"
-  tgt = server_dir + "Common/sources/constants.js"
+  tgt = server_dir + "/Common/sources/constants.js"
   needpatch = False
   try:
     base.cmd("grep",["exports.LICENSE_CONNECTIONS = 10000","%s"%tgt])
