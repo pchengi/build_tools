@@ -4,6 +4,7 @@ import os
 import config
 import base
 import datetime
+import subprocess
 
 def make():
   #check server module to build
@@ -26,8 +27,8 @@ def make():
     try:
         oldcurd = os.getcwd()
         os.chdir(server_dir)
-        base.cmd("git",["checkout","-b", "CUpgrade"])
-        base.cmd("git",["am","%s"%patchfile])
+        subprocess.getoutput("git checkout -b CUpgrade")
+        subprocess.getoutput("git am %s"%patchfile)
         print("CUpgrade patch applied successfully.")
         os.chdir(oldcurd)
     except:
