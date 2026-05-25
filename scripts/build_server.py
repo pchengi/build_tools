@@ -17,7 +17,7 @@ def make():
   patchfile = server_dir + "/../build_tools/patches/climit.patch"
   tgt = server_dir + "/Common/sources/constants.js"
   needpatch = False
-  status,output = subprocessg.getstatusoutput("grep 'exports.LICENSE_CONNECTIONS = 100000' %s"%tgt)
+  status,output = subprocess.getstatusoutput("grep 'exports.LICENSE_CONNECTIONS = 100000' %s"%tgt)
   print(output)
   if status == 0:
     print("CUpgrade patch already in place.")
