@@ -161,25 +161,6 @@ def make():
   # --------------------------------------------------------------------------
   # build
   os.chdir("v8")
-  #check and apply header fix
-  sc_dir = base.get_script_dir()
-  patchfile = sc_dir + '/../patches/v8headerfix'
-  tgt = "src/base/logging.h"
-  needpatch = False
-  try:
-      base.cmd("grep",["cstdin","%s"%tgt])
-      print("cstdin header present. No need to patch")
-  except:
-      print("cstdin header missing. Will patch")
-      needpatch = True
-  if needpatch:
-      try:
-          base.cmd("git",["checkout","-b", "v8headerfix"])
-          base.cmd("git",["am","%s"%patchfile])
-          print("Patch applied successfully")
-      except:
-          print("Patch application failed")
-          raise
 
   base_args64 = "target_cpu=\\\"x64\\\" v8_target_cpu=\\\"x64\\\" v8_static_library=true is_component_build=false v8_use_snapshot=false"
   base_args32 = "target_cpu=\\\"x86\\\" v8_target_cpu=\\\"x86\\\" v8_static_library=true is_component_build=false v8_use_snapshot=false"
