@@ -8,12 +8,16 @@ RUN apt-get -y update && \
                        python3 \
                        tar \
                        wget \
-                       curl
-ADD . /build_tools
-WORKDIR /build_tools
+                       curl \
+                       debhelper \
+                       pkg-config
+WORKDIR /mnt
+ADD . build_tools
+WORKDIR build_tools
 ARG BRANCH=master
 ARG MODULE=server
 ENV MODULE=${MODULE}
 ENV BRANCH=${BRANCH}
+WORKDIR /mnt/build_tools/tools/linux
 
-CMD ["sh", "-c", "cd tools/linux && python3 ./automate.py ${MODULE} --clean=\"0\" --sysroot=\"0\" --update=\"1\" --update-light=\"1\" --branch=\"${BRANCH}\""]
+CMD ["sh", "-c", "python3 ./automate.py ${MODULE} --clean=\"0\" --sysroot=\"1\" --update=\"1\" --update-light=\"1\" --branch=\"${BRANCH}\""]
