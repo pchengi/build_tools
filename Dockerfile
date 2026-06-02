@@ -19,5 +19,6 @@ ARG MODULE=server
 ENV MODULE=${MODULE}
 ENV BRANCH=${BRANCH}
 WORKDIR /mnt/build_tools/tools/linux
+RUN python3 ./deps.py
 
 CMD ["sh", "-c", "python3 ./automate.py ${MODULE} --clean=\"0\" --sysroot=\"1\" --update=\"1\" --update-light=\"1\" --branch=\"${BRANCH}\""]
